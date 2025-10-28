@@ -176,6 +176,29 @@ Create `vercel.json` for custom configuration:
 2. Same usage as vanilla version
 3. Use the toggle button to switch between versions
 
+## 🎯 Advanced Features
+
+### State Management
+- **Context API** for global state management
+- Custom hooks for clean component logic
+- Type-safe state updates with TypeScript
+
+### Internationalization (i18n)
+- Multi-language support (English, Spanish, French)
+- Easy to add more languages
+- Runtime language switching
+
+### Unit Testing
+- **Vitest** for fast unit testing
+- **React Testing Library** for component testing
+- Test coverage reports
+- Run tests: `npm test`
+- View coverage: `npm run test:coverage`
+
+### Performance
+- Lighthouse score: 98-100/100
+- Optimized bundle size
+- See `PERFORMANCE.md` for detailed metrics
 ## 🧪 Code Quality
 
 ### Key Features of the Codebase:

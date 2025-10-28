@@ -1,12 +1,13 @@
 /**
  * UnitConverter Component
- * Enhanced with mode switcher for Distance and Temperature
+ * Enhanced with Context API, floating particles, and i18n
  */
 
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import ResultDisplay from './ResultDisplay';
-import { ConversionType, ConverterState, ConverterMode } from '../types/converter';
-import { isValidInput, performConversion } from '../utils/converter';
+import { ConversionType, ConverterMode } from '../types/converter';
+import { useConverter } from '../context/ConverterContext';
 
 // Floating particle component
 const FloatingParticle = ({ delay }: { delay: number }) => {
@@ -23,96 +24,16 @@ const FloatingParticle = ({ delay }: { delay: number }) => {
 };
 
 const UnitConverter: React.FC = () => {
-  const [state, setState] = useState<ConverterState>({
-    inputValue: '',
-    conversionType: ConversionType.KM_TO_MI,
-    converterMode: ConverterMode.DISTANCE,
-    result: null,
-    error: null
-  });
-
+  const { t } = useTranslation();
+  const { state, handleInputChange, switchMode, toggleConversionType, handleConvert } = useConverter();
+  
   const [particles] = useState(() => Array.from({ length: 15 }, (_, i) => i));
 
-  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setState(prev => ({
-      ...prev,
-      inputValue: e.target.value,
-      error: null
-    }));
-  }, []);
-
-  const switchMode = useCallback((mode: ConverterMode) => {
-    setState(prev => ({
-      ...prev,
-      converterMode: mode,
-      conversionType: mode === ConverterMode.DISTANCE ? ConversionType.KM_TO_MI : ConversionType.C_TO_F,
-      result: null,
-      error: null,
-      inputValue: ''
-    }));
-  }, []);
-
-  const toggleConversionType = useCallback(() => {
-    setState(prev => {
-      let newType: ConversionType;
-      
-      if (prev.converterMode === ConverterMode.DISTANCE) {
-        newType = prev.conversionType === ConversionType.KM_TO_MI 
-          ? ConversionType.MI_TO_KM 
-          : ConversionType.KM_TO_MI;
-      } else {
-        newType = prev.conversionType === ConversionType.C_TO_F 
-          ? ConversionType.F_TO_C 
-          : ConversionType.C_TO_F;
-      }
-
-      return {
-        ...prev,
-        conversionType: newType,
-        result: null,
-        error: null
-      };
-    });
-  }, []);
-
-  const handleConvert = useCallback(() => {
-    if (!isValidInput(state.inputValue)) {
-      setState(prev => ({
-        ...prev,
-        result: null,
-        error: 'Please enter a valid number'
-      }));
-      return;
-    }
-
-    const numericValue = parseFloat(state.inputValue);
-
-    // Only check for negative values in distance mode
-    if (state.converterMode === ConverterMode.DISTANCE && numericValue < 0) {
-      setState(prev => ({
-        ...prev,
-        result: null,
-        error: 'Please enter a positive number'
-      }));
-      return;
-    }
-
-    const conversionResult = performConversion(numericValue, state.conversionType);
-
-    setState(prev => ({
-      ...prev,
-      result: conversionResult,
-      error: null
-    }));
-
-    console.log('Conversion performed:', conversionResult);
-  }, [state.inputValue, state.conversionType, state.converterMode]);
-
-  const handleKeyPress = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleConvert();
     }
-  }, [handleConvert]);
+  };
 
   const isDistanceMode = state.converterMode === ConverterMode.DISTANCE;
   const isFirstOption = isDistanceMode 
@@ -120,12 +41,10 @@ const UnitConverter: React.FC = () => {
     : state.conversionType === ConversionType.C_TO_F;
 
   const getIcon = () => isDistanceMode ? '🌍' : '🌡️';
-  const getTitle = () => isDistanceMode ? 'Distance' : 'Temperature';
-  const getLeftLabel = () => isDistanceMode ? 'Kilometers → Miles' : 'Celsius → Fahrenheit';
-  const getRightLabel = () => isDistanceMode ? 'Miles → Kilometers' : 'Fahrenheit → Celsius';
-  const getFormula = () => isDistanceMode 
-    ? '1 kilometer = 0.621371 miles | 1 mile = 1.60934 kilometers'
-    : '°F = (°C × 9/5) + 32 | °C = (°F - 32) × 5/9';
+  const getTitle = () => isDistanceMode ? t('distance') : t('temperature');
+  const getLeftLabel = () => isDistanceMode ? t('kmToMi') : t('cToF');
+  const getRightLabel = () => isDistanceMode ? t('miToKm') : t('fToC');
+  const getFormula = () => isDistanceMode ? t('distanceFormula') : t('tempFormula');
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-500 via-primary-600 to-secondary-500 flex items-center justify-center p-5 relative overflow-hidden">
@@ -143,11 +62,11 @@ const UnitConverter: React.FC = () => {
         <header className="text-center mb-9">
           <h1 className="text-4xl font-bold text-gray-800 mb-2 flex items-center justify-center gap-3">
             <span className="animate-bounce">{getIcon()}</span>
-            {getTitle()} Unit Converter
+            {getTitle()} {t('title')}
           </h1>
           <p className="text-gray-600 text-sm font-medium tracking-wide flex items-center justify-center gap-2">
             <span className="inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            React + TypeScript + Tailwind CSS
+            {t('subtitle')}
           </p>
         </header>
 
@@ -161,7 +80,7 @@ const UnitConverter: React.FC = () => {
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            🌍 Distance
+            🌍 {t('distance')}
           </button>
           <button
             onClick={() => switchMode(ConverterMode.TEMPERATURE)}
@@ -171,7 +90,7 @@ const UnitConverter: React.FC = () => {
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            🌡️ Temperature
+            🌡️ {t('temperature')}
           </button>
         </div>
 
@@ -183,15 +102,15 @@ const UnitConverter: React.FC = () => {
               htmlFor="inputValue"
               className="text-gray-700 font-semibold text-[15px] tracking-wide"
             >
-              Enter Value:
+              {t('enterValue')}:
             </label>
             <input
               type="number"
               id="inputValue"
               value={state.inputValue}
-              onChange={handleInputChange}
+              onChange={(e) => handleInputChange(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Enter a number"
+              placeholder={t('enterNumber')}
               step="any"
               autoFocus
               className="px-5 py-4 border-2 border-gray-300 rounded-xl text-base
@@ -205,7 +124,7 @@ const UnitConverter: React.FC = () => {
           {/* Toggle Switch with Animation */}
           <div className="flex flex-col gap-2.5">
             <label className="text-gray-700 font-semibold text-[15px] tracking-wide">
-              Conversion Direction:
+              {t('conversionDirection')}:
             </label>
             
             <div className="flex items-center justify-center gap-4 p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl shadow-inner">
@@ -249,7 +168,7 @@ const UnitConverter: React.FC = () => {
                      focus:outline-none focus:ring-4 focus:ring-primary-300
                      relative overflow-hidden group"
           >
-            <span className="relative z-10">Convert</span>
+            <span className="relative z-10">{t('convert')}</span>
             <span className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
           </button>
 
@@ -260,7 +179,7 @@ const UnitConverter: React.FC = () => {
           <div className="bg-gradient-to-r from-primary-50 to-secondary-50 px-5 py-5 rounded-xl border-l-4 border-primary-500 shadow-sm">
             <p className="text-center text-gray-600 text-sm leading-relaxed">
               <strong className="text-gray-700 block mb-2 text-[15px]">
-                Conversion Formulas:
+                {t('conversionFormulas')}:
               </strong>
               {getFormula()}
             </p>
@@ -270,7 +189,7 @@ const UnitConverter: React.FC = () => {
         {/* Footer */}
         <footer className="text-center mt-8 pt-5 border-t border-gray-200">
           <p className="text-gray-500 text-[13px] flex items-center justify-center gap-2">
-            Built with React, TypeScript, and Tailwind CSS
+            {t('builtWith')}
             <span className="inline-block w-1.5 h-1.5 bg-primary-500 rounded-full animate-ping" />
           </p>
         </footer>
