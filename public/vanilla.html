@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Professional unit converter between kilometers and miles">
+    <title>Unit Converter - Vanilla JS Version</title>
+    <link rel="stylesheet" href="/vanilla/style.css">
+</head>
+<body>
+    <!-- Toggle Button -->
+    <button 
+        onclick="window.location.href='/'"
+        style="
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1000;
+            background: white;
+            color: #667eea;
+            padding: 12px 24px;
+            border-radius: 9999px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            border: 2px solid #667eea;
+            transition: all 0.3s ease;
+        "
+        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 15px 30px rgba(0,0,0,0.2)'"
+        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 25px rgba(0,0,0,0.15)'"
+    >
+        More Advanced →
+    </button>
+
+    <div class="container">
+        <header class="header">
+            <h1 class="title">🌍 Distance Unit Converter</h1>
+            <p class="subtitle">Vanilla JavaScript Version</p>
+        </header>
+
+        <main class="converter-wrapper">
+            <div class="converter-box">
+                <!-- Input Section -->
+                <div class="input-group">
+                    <label for="inputValue" class="label">Enter Value:</label>
+                    <input 
+                        type="number" 
+                        id="inputValue" 
+                        class="input-field"
+                        placeholder="Enter a number" 
+                        step="any"
+                        autofocus
+                        aria-label="Value to convert"
+                    >
+                </div>
+
+                <!-- Conversion Direction Selection -->
+                <div class="input-group">
+                    <label class="label">Select Conversion Direction:</label>
+                    <div class="conversion-options">
+                        <div class="radio-option selected" id="option-km-to-mi" tabindex="0">
+                            <input 
+                                type="radio" 
+                                id="kmToMi" 
+                                name="conversion" 
+                                value="kmToMi" 
+                                checked
+                            >
+                            <label for="kmToMi">Kilometers → Miles</label>
+                        </div>
+                        <div class="radio-option" id="option-mi-to-km" tabindex="0">
+                            <input 
+                                type="radio" 
+                                id="miToKm" 
+                                name="conversion" 
+                                value="miToKm"
+                            >
+                            <label for="miToKm">Miles → Kilometers</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Convert Button -->
+                <button id="convertBtn" class="convert-btn">
+                    Convert
+                </button>
+
+                <!-- Result Display -->
+                <div class="result-box" role="status" aria-live="polite">
+                    <div class="result-text" id="result">
+                        Enter a value and click Convert
+                    </div>
+                </div>
+
+                <!-- Information Section -->
+                <div class="info-section">
+                    <p class="info-text">
+                        <strong>Conversion Formulas:</strong><br>
+                        1 kilometer = 0.621371 miles<br>
+                        1 mile = 1.60934 kilometers
+                    </p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>Built with HTML, CSS, and JavaScript</p>
+        </footer>
+    </div>
+
+    <script src="/vanilla/script.js"></script>
+</body>
+</html>

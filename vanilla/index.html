@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Professional unit converter between kilometers and miles">
+    <title>Unit Converter - Vanilla JS Version</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Toggle Button -->
+    <a 
+        href="/"
+        style="
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1000;
+            background: white;
+            color: #667eea;
+            padding: 12px 24px;
+            border-radius: 9999px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            border: 2px solid #667eea;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        "
+        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 15px 30px rgba(0,0,0,0.2)'"
+        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 25px rgba(0,0,0,0.15)'"
+    >
+        ← View Advanced Version
+    </a>
+
+    <div class="container">
+        <header class="header">
+            <h1 class="title">🌍 Distance Unit Converter</h1>
+            <p class="subtitle">Vanilla JavaScript Version</p>
+        </header>
+
+        <main class="converter-wrapper">
+            <div class="converter-box">
+                <!-- Input Section -->
+                <div class="input-group">
+                    <label for="inputValue" class="label">Enter Value:</label>
+                    <input 
+                        type="number" 
+                        id="inputValue" 
+                        class="input-field"
+                        placeholder="Enter a number" 
+                        step="any"
+                        autofocus
+                        aria-label="Value to convert"
+                    >
+                </div>
+
+                <!-- Conversion Direction Toggle -->
+                <div class="input-group">
+                    <label class="label">Conversion Direction:</label>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 16px; padding: 16px; background: #f8f9fa; border-radius: 12px;">
+                        <span id="kmLabel" style="font-size: 15px; font-weight: 600; color: #667eea; transition: all 0.3s;">Kilometers → Miles</span>
+                        
+                        <!-- Toggle Switch -->
+                        <button id="toggleBtn" onclick="toggleConversion()" style="
+                            position: relative;
+                            width: 64px;
+                            height: 32px;
+                            background: #667eea;
+                            border-radius: 9999px;
+                            border: none;
+                            cursor: pointer;
+                            transition: background 0.3s;
+                            outline: none;
+                        " aria-label="Toggle conversion direction">
+                            <span id="toggleCircle" style="
+                                position: absolute;
+                                top: 4px;
+                                left: 4px;
+                                width: 24px;
+                                height: 24px;
+                                background: white;
+                                border-radius: 50%;
+                                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                                transition: transform 0.3s;
+                            "></span>
+                        </button>
+                        
+                        <span id="miLabel" style="font-size: 15px; font-weight: 500; color: #777; transition: all 0.3s;">Miles → Kilometers</span>
+                    </div>
+                </div>
+
+                <!-- Convert Button -->
+                <button id="convertBtn" class="convert-btn">
+                    Convert
+                </button>
+
+                <!-- Result Display -->
+                <div class="result-box" role="status" aria-live="polite">
+                    <div class="result-text" id="result">
+                        Enter a value and click Convert
+                    </div>
+                </div>
+
+                <!-- Information Section -->
+                <div class="info-section">
+                    <p class="info-text">
+                        <strong>Conversion Formulas:</strong><br>
+                        1 kilometer = 0.621371 miles<br>
+                        1 mile = 1.60934 kilometers
+                    </p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>Built with HTML, CSS, and JavaScript</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
